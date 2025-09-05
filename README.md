@@ -1,4 +1,4 @@
-# Microbiome Diversity Analysis in AD Mouse Models
+# Microbiome Diversity Analysis with QIIME2 and ANCOMBC
 
 The primary focus of this project is to understand how microbiome diversity varies across genotypes, ages, and disease progression, using various diversity metrics and statistical methods.
 
