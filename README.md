@@ -12,7 +12,7 @@ The primary focus of this project is to understand how microbiome diversity vari
 - Performed **Bray-Curtis dissimilarity** calculations to compare microbiome composition between samples.
 - Visualized using **Principal Coordinates Analysis (PCoA)**, with colors indicating different **genotypes**.
 
-### 3. **PERMANOVA**
+### 3. **PERMANOVA** - _To be released_
 - Conducted a **PERMANOVA test** to assess statistical differences in microbiome composition between groups.
 - Used **genotype** as a grouping variable to identify significant effects.
 - The output includes a test statistic (`pseudo-F`) and a p-value to determine if the groups are significantly different.
