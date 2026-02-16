@@ -12,16 +12,17 @@ The primary focus of this project is to understand how microbiome diversity vari
 - Performed **Bray-Curtis dissimilarity** calculations to compare microbiome composition between samples.
 - Visualized using **Principal Coordinates Analysis (PCoA)**, with colors indicating different **genotypes**.
 
-### 3. **PERMANOVA** - _To be released_
+### 3. **PERMANOVA** 
 - Conducted a **PERMANOVA test** to assess statistical differences in microbiome composition between groups.
 - Used **genotype** as a grouping variable to identify significant effects.
 - The output includes a test statistic (`pseudo-F`) and a p-value to determine if the groups are significantly different.
 
-### 5. **ANCOMBC (Analysis of Composition of Microbiomes with Bias Correction)** - _To be released_
+### 4. **ANCOMBC (Analysis of Composition of Microbiomes with Bias Correction)** 
 - **ANCOMBC** was used to identify differentially abundant taxa between groups (genotype, age).
 - Multiple comparisons were made, and differential abundance results were visualized through **barplots** and **significance plots**.
 - The results help identify which taxa show significant differences based on genotype and age, shedding light on microbiome shifts due to AD progression.
 
+#### _Note:  Scripts are currently in development and will be made available once complete._
 ---
 
 ## 📊 Data and Outputs
