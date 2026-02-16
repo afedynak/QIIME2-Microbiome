@@ -22,7 +22,6 @@ The primary focus of this project is to understand how microbiome diversity vari
 - Multiple comparisons were made, and differential abundance results were visualized through **barplots** and **significance plots**.
 - The results help identify which taxa show significant differences based on genotype and age, shedding light on microbiome shifts due to AD progression.
 
-#### _Note:  Scripts are currently in development and will be made available once complete._
 ---
 
 ## 📊 Data and Outputs
@@ -82,3 +81,6 @@ Here’s a sample of the types of figures you’ll generate:
 ## 🖋️ Authors
 
 All scripts in this repository were created by Amber Fedynak, who led the development of bioinformatics pipelines, data processing, and analysis for integrating genetic variants, longitudinal health metrics, and microbiome data
+
+#### _Note:  This repository is currently under development and all scripts will be made available once complete._
+
