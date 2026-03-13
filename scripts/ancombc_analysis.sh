@@ -1,44 +1,86 @@
-# Reference levels array
-reference_levels=(
-	"C57BL6J"           # Wild-type control
-	"5xFAD_carrier"     # Alzheimer's model carriers
-	"5xFAD_noncarrier"  # Alzheimer's model non-carriers
-	"APOE4_homozygous"  # APOE4 variant mice
-	"TREM2R47H_homozygous"  # TREM2 variant mice
-)
+#!/bin/bash
 
-# Define taxonomic levels in a variable
-taxonomic_levels=("phylum" "family" "genus" "species" "class" "order")
+# ------------------------------------------------------------
+# Author: Amber Fedynak
+# Description:
+# Longitudinal microbiome analysis using QIIME2 ANCOMBC
+# Step 1) Compare all groups against a baseline reference (C57BL6J_2)
+# Step 2) Track changes over time within each genotype
+# ------------------------------------------------------------
 
-# Loop over each reference level and each taxonomic level
-for ref_level in "${reference_levels[@]}"; do
-    for taxonomic_level in "${taxonomic_levels[@]}"; do
-        # Run ANCOMBC for each reference level and taxonomic level
-        qiime composition ancombc \
-            --i-table collapsed-table_"$taxonomic_level".qza \
-            --m-metadata-file jax_iu_pitt_metadata_v3.txt \
-            --p-formula "genotype" \
-            --p-reference-levels "genotype::$ref_level" \
-            --o-differentials "ancombc_${taxonomic_level}_$ref_level.qza" \
-            --verbose
+# ---------------------------
+# Reference / baseline group
+# ---------------------------
+baseline_ref="C57BL6J_2"
 
-        # Create a barplot for the results
-        qiime composition da-barplot \
-            --i-data "ancombc_${taxonomic_level}_$ref_level.qza" \
-            --o-visualization "ancombc_${taxonomic_level}_$ref_level.qzv"
+# ---------------------------
+# Genotypes to analyze longitudinally
+# ---------------------------
+genotypes=("C57BL6J" "5xFAD_carrier" "5xFAD_noncarrier")
 
-        # Create a barplot with significance threshold
-        qiime composition da-barplot \
-            --i-data "ancombc_${taxonomic_level}_$ref_level.qza" \
-            --p-level-delimiter ";" \
-            --p-significance-threshold 0.05 \
-            --o-visualization "ancombc_${taxonomic_level}_sig_$ref_level.qzv"
+# ---------------------------
+# Time points
+# ---------------------------
+time_points=("2" "6" "12")
 
-        # Extract the results
-        qiime tools extract \
-            --input-path "ancombc_${taxonomic_level}_$ref_level.qza" \
-            --output-path "ancombc_${taxonomic_level}_${ref_level}_output"
+# ---------------------------
+# Taxonomic levels
+# ---------------------------
+taxonomic_levels=("phylum" "family" "genus" "species")
 
+# ---------------------------
+# Step 1: Compare all groups against baseline
+# ---------------------------
+for tax_level in "${taxonomic_levels[@]}"; do
+    for genotype in "${genotypes[@]}"; do
+        for time in "${time_points[@]}"; do
+            sample="${genotype}_${time}"
+
+            # Skip baseline vs itself
+            if [[ "$sample" == "$baseline_ref" ]]; then
+                continue
+            fi
+
+            echo "Running ANCOMBC: $sample vs $baseline_ref at $tax_level level"
+
+            qiime composition ancombc \
+                --i-table collapsed-table_"$tax_level".qza \
+                --m-metadata-file jax_iu_pitt_metadata_v3.txt \
+                --p-formula "genotype" \
+                --p-reference-levels "genotype::$baseline_ref" \
+                --o-differentials "ancombc_${tax_level}_${sample}_vs_${baseline_ref}.qza" \
+                --verbose
+
+            # Generate barplot
+            qiime composition da-barplot \
+                --i-data "ancombc_${tax_level}_${sample}_vs_${baseline_ref}.qza" \
+                --o-visualization "ancombc_${tax_level}_${sample}_vs_${baseline_ref}.qzv"
+
+            # Barplot with significance threshold
+            qiime composition da-barplot \
+                --i-data "ancombc_${tax_level}_${sample}_vs_${baseline_ref}.qza" \
+                --p-level-delimiter ";" \
+                --p-significance-threshold 0.05 \
+                --o-visualization "ancombc_${tax_level}_${sample}_sig_vs_${baseline_ref}.qzv"
+
+            # Extract results
+            qiime tools extract \
+                --input-path "ancombc_${tax_level}_${sample}_vs_${baseline_ref}.qza" \
+                --output-path "ancombc_${tax_level}_${sample}_vs_${baseline_ref}_output"
+        done
     done
 done
+
+# ---------------------------
+# Step 2: Track longitudinal changes within each genotype
+# Run ANCOMBC with formula: "genotype + time_point"
+# ---------------------------
+ for tax_level in "${taxonomic_levels[@]}"; do
+     qiime composition ancombc \
+         --i-table collapsed-table_"$tax_level".qza \
+         --m-metadata-file jax_iu_pitt_metadata_v3.txt \
+         --p-formula "genotype + time_point" \
+         --o-differentials "ancombc_${tax_level}_longitudinal.qza" \
+         --verbose
+ done
 
